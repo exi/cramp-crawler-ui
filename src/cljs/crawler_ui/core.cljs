@@ -45,13 +45,15 @@
     (render [this]
       (dom/div nil
         (dom/h2 nil "Results")
-        (dom/table nil
-                   (dom/thead nil
-                              (dom/tr nil
-                                      (dom/th nil "Size")
-                                      (dom/th nil "Url")))
-                   (apply dom/tbody nil
-                          (om/build-all result-view (sort-by #(get % "name") (:results data)))))))))
+        (if-not (seq (:results data))
+          (dom/div nil "No results :(")
+          (dom/table nil
+                     (dom/thead nil
+                                (dom/tr nil
+                                        (dom/th nil "Size")
+                                        (dom/th nil "Url")))
+                     (apply dom/tbody nil
+                            (om/build-all result-view (sort-by #(get % "name") (:results data))))))))))
 
 (defn statistics-value-view [value owner]
   (reify
