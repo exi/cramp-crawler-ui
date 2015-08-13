@@ -127,7 +127,7 @@
         (dom/div nil
                  (dom/div nil "Query accepts standard lucene queries: "
                           (dom/a #js {:href "https://lucene.apache.org/core/2_9_4/queryparsersyntax.html"} "click here"))
-                 (dom/div nil "Example queries: \"bdsm AND .mp4$\" (All bdsm files that end in .mp4), \"ebooks AND algorithms\" (ebooks about algorithms), \"apocalyptica AND .mp3$\" (files with apocalyptica in it that end in .mp3)")
+                 (dom/div nil "Example queries: \"bdsm AND mp4\" (All bdsm files in mp4), \"ebooks AND algorithms\" (ebooks about algorithms), \"apocalyptica AND mp3\" (files with apocalyptica that contain mp3)")
                  (dom/div nil "Press enter for search. Results are limited to 10000, if your browser dies, it's your fault.")
                  (dom/div nil
                           (dom/input #js {:type :text
