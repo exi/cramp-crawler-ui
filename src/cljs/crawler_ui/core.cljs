@@ -29,15 +29,20 @@
     (as/<! (as/timeout 1000))
     (recur)))
 
+(defn build-host-link [host]
+  (dom/a #js {:href (str "ftp://" host)} host))
+
 (defn result-view [file owner]
   (reify
     om/IRender
     (render [this]
-      (dom/tr nil
-              (dom/td nil (format-size (get file "size")))
-              (dom/td nil
-                      (dom/a #js {:href (get file "url")}
-                             (js/decodeURI (get file "url"))))))))
+      (let [{size "size" host "ip" url "url" name "name"} file]
+        (dom/tr nil
+                (dom/td nil (format-size size))
+                (dom/td nil (build-host-link host))
+                (dom/td nil
+                        (dom/a #js {:href url}
+                               name)))))))
 
 (defn results-view [data owner]
   (reify
@@ -51,7 +56,8 @@
                      (dom/thead nil
                                 (dom/tr nil
                                         (dom/th nil "Size")
-                                        (dom/th nil "Url")))
+                                        (dom/th nil "Host")
+                                        (dom/th nil "Name")))
                      (apply dom/tbody nil
                             (om/build-all result-view (sort-by #(get % "name") (:results data))))))))))
 
@@ -59,10 +65,11 @@
   (reify
     om/IRender
     (render [this]
-      (dom/tr nil
-              (dom/td nil (get value "ip"))
-              (dom/td nil (get value "files"))
-              (dom/td nil (format-size (get value "size")))))))
+      (let [{ip "ip" files "files" size "size"} value]
+        (dom/tr nil
+                (dom/td nil (build-host-link ip))
+                (dom/td nil files)
+                (dom/td nil (format-size size)))))))
 
 (defn sort-statistics [data]
   (sort-by #(mapv js/parseInt (string/split (first %) #"\.")) data))
@@ -127,7 +134,8 @@
         (dom/div nil
                  (dom/div nil "Query accepts standard lucene queries: "
                           (dom/a #js {:href "https://lucene.apache.org/core/2_9_4/queryparsersyntax.html"} "click here"))
-                 (dom/div nil "Example queries: \"bdsm AND mp4\" (All bdsm files in mp4), \"ebooks AND algorithms\" (ebooks about algorithms), \"apocalyptica AND mp3\" (files with apocalyptica that contain mp3)")
+                 (dom/div nil "Example queries: \"predestination AND torrent\" (Predestination movie as a torrent), \"bdsm AND mp4\" (All bdsm files in mp4), \"ebooks AND algorithms\" (ebooks about algorithms), \"apocalyptica AND mp3\" (files with apocalyptica that contain mp3)")
+                 (dom/div nil "The \"AND\" has to be in upper case!")
                  (dom/div nil "Press enter for search. Results are limited to 10000, if your browser dies, it's your fault.")
                  (dom/div nil
                           (dom/input #js {:type :text
